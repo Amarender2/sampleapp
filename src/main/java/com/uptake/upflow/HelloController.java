@@ -55,10 +55,11 @@ public class HelloController {
 
             String input = "{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
 
+            input += Constants.FEEDBACK_QUESTION;
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
 
-            askFeedback(responseUrl, os);
+            //askFeedback(responseUrl, os);
 
             os.flush();
 

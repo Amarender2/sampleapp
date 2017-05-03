@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Enumeration;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,17 +25,24 @@ public class HelloController {
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/hello", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response sayHello2() {
         System.out.println("Hello Hackathon GET");
         String jsonString = " json String GET";
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/hello2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response sayHello3() {
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response sayHello3(@Context HttpServletRequest httpRequest) {
         System.out.println("Hello Hackathon sending");
-        String jsonString = " json String sending";
+        Enumeration<String> parameterNames = httpRequest.getParameterNames();
+
+        String str = "";
+        while (parameterNames.hasMoreElements()) {
+            str += parameterNames.nextElement();
+        }
+
+        String jsonString = "Json : " + str;
         try {
             URL url = new URL(Constants.INCOMING_WEBHOOK_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -67,10 +77,16 @@ public class HelloController {
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/hello3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response sayHello4() {
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello3", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response sayHello4(@Context HttpServletRequest httpServletRequest) {
         System.out.println("Hello Hackathon Feedback");
-        String jsonString = " json String feedback";
+        Enumeration<String> parameterNames = httpServletRequest.getParameterNames();
+        String str = "";
+        while (parameterNames.hasMoreElements()) {
+            str += parameterNames.nextElement();
+        }
+
+        String jsonString = "Json 3333 : " + str;
         try {
             URL url = new URL(Constants.INCOMING_WEBHOOK_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

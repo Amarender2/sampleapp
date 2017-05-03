@@ -39,7 +39,8 @@ public class HelloController {
 
         String str = "";
         while (parameterNames.hasMoreElements()) {
-            str += parameterNames.nextElement();
+            String s = parameterNames.nextElement();
+            str += "\n" + s + httpRequest.getParameter(s) + "\n";
         }
 
         String jsonString = "Json : " + str;

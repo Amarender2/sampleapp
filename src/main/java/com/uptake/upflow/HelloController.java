@@ -43,15 +43,15 @@ public class HelloController {
             str += "\n" + s + httpRequest.getParameter(s) + "\n";
         }
 
-        String jsonString = "Json : " + str;
+        String jsonString = "Hello " + httpRequest.getParameter("user_name") + ". UpFlow can't find the answer in it's DB";
         try {
-            URL url = new URL(Constants.INCOMING_WEBHOOK_URL);
+            URL url = new URL(httpRequest.getParameter("response_url"));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
-            String input = "{\n" + "    \"text\": \"<http://localhost:8080/swagger-ui.html|Click here> for details!\"\n" + "}";
+            String input = "{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
 
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());

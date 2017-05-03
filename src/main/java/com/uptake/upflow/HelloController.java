@@ -1,6 +1,7 @@
 package com.uptake.upflow;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -33,7 +34,7 @@ public class HelloController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/hello3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response sayHello3(@Context HttpServletRequest httpRequest) {
+    public void sayHello3(@Context HttpServletRequest httpRequest) {
         System.out.println("Hello Hackathon sending");
         Enumeration<String> parameterNames = httpRequest.getParameterNames();
 
@@ -43,9 +44,10 @@ public class HelloController {
             str += "\n" + s + httpRequest.getParameter(s) + "\n";
         }
 
-        String jsonString = "Hello " + httpRequest.getParameter("user_name") + ". UpFlow can't find the answer in it's DB";
+        String jsonString = "Hello " + httpRequest.getParameter("user_name") + ". UpFlow can't find the answer for " + httpRequest.getParameter("text") + " in it's DB";
         try {
-            URL url = new URL(httpRequest.getParameter("response_url"));
+            String responseUrl = httpRequest.getParameter("response_url");
+            URL url = new URL(responseUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
@@ -55,6 +57,9 @@ public class HelloController {
 
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
+
+            askFeedback(responseUrl);
+
             os.flush();
 
             if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
@@ -70,12 +75,22 @@ public class HelloController {
             }
 
             conn.disconnect();
-
         } catch (Exception e) {
-            //            System.out.print("Exception : \n" + e);
+            // System.out.print("Exception : \n" + e);
         }
 
-        return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
+        // return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
+    }
+
+    private void askFeedback(String responseUrl) throws IOException {
+        URL url = new URL(responseUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        String input = Constants.FEEDBACK_QUESTION;
+        OutputStream os = conn.getOutputStream();
+        os.write(input.getBytes());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/hello4", produces = MediaType.APPLICATION_JSON_VALUE)

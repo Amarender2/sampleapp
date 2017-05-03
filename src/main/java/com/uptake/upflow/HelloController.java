@@ -53,7 +53,7 @@ public class HelloController {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
-            String input = "{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
+            String input = "";//"{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
 
             input += Constants.FEEDBACK_QUESTION;
             OutputStream os = conn.getOutputStream();

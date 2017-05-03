@@ -58,7 +58,7 @@ public class HelloController {
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
 
-            askFeedback(responseUrl);
+            askFeedback(responseUrl, os);
 
             os.flush();
 
@@ -82,15 +82,10 @@ public class HelloController {
         // return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    private void askFeedback(String responseUrl) throws IOException {
+    private void askFeedback(String responseUrl, OutputStream outputStream) throws IOException {
         URL url = new URL(responseUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
         String input = Constants.FEEDBACK_QUESTION;
-        OutputStream os = conn.getOutputStream();
-        os.write(input.getBytes());
+        outputStream.write(input.getBytes());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/hello4", produces = MediaType.APPLICATION_JSON_VALUE)

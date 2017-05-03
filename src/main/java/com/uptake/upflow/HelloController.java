@@ -25,14 +25,14 @@ public class HelloController {
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/hello", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello2", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response sayHello2() {
         System.out.println("Hello Hackathon GET");
         String jsonString = " json String GET";
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/hello2", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello3", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response sayHello3(@Context HttpServletRequest httpRequest) {
         System.out.println("Hello Hackathon sending");
         Enumeration<String> parameterNames = httpRequest.getParameterNames();
@@ -77,7 +77,7 @@ public class HelloController {
         return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/hello3", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/api/hello4", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response sayHello4(@Context HttpServletRequest httpServletRequest) {
         System.out.println("Hello Hackathon Feedback");
         Enumeration<String> parameterNames = httpServletRequest.getParameterNames();

@@ -53,13 +53,10 @@ public class HelloController {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
-            String input = "";//"{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
+            String input = "{\n" + "    \"text\": \" " + jsonString + "<http://www.google.com|Click here> for details!\"\n" + "}";
 
-            input += Constants.FEEDBACK_QUESTION;
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
-
-            //askFeedback(responseUrl, os);
 
             os.flush();
 
@@ -76,6 +73,8 @@ public class HelloController {
             }
 
             conn.disconnect();
+
+            askFeedback();
         } catch (Exception e) {
             // System.out.print("Exception : \n" + e);
         }
@@ -83,10 +82,32 @@ public class HelloController {
         // return Response.status(HttpStatus.OK.value()).entity(jsonString).build();
     }
 
-    private void askFeedback(String responseUrl, OutputStream outputStream) throws IOException {
-        URL url = new URL(responseUrl);
+    private void askFeedback() throws IOException {
+        URL url = new URL(Constants.INCOMING_WEBHOOK_URL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+
         String input = Constants.FEEDBACK_QUESTION;
-        outputStream.write(input.getBytes());
+
+        OutputStream os = conn.getOutputStream();
+        os.write(input.getBytes());
+        os.flush();
+
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+        String output;
+        System.out.println("Output from Server .... \n");
+        while ((output = br.readLine()) != null) {
+            System.out.println(output);
+        }
+
+        conn.disconnect();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/hello4", produces = MediaType.APPLICATION_JSON_VALUE)
